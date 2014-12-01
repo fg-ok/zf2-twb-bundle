@@ -178,6 +178,7 @@ class TwbBundleFormRow extends FormRow
                         break;
 
                     case TwbBundleForm::LAYOUT_HORIZONTAL:
+                    case TwbBundleForm::LAYOUT_VERTICAL:
                         if ($sElementType !== 'checkbox') {
                             if (empty($aLabelAttributes['class'])) {
                                 $aLabelAttributes['class'] = 'control-label';
@@ -241,6 +242,7 @@ class TwbBundleFormRow extends FormRow
                 return $sElementContent;
 
             case TwbBundleForm::LAYOUT_HORIZONTAL:
+            case TwbBundleForm::LAYOUT_VERTICAL:
                 $sElementContent = $this->getElementHelper()->render($oElement) . $this->renderHelpBlock($oElement);
 
                 //Render errors
