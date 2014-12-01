@@ -216,6 +216,26 @@ class TwbBundleFormsTest extends \PHPUnit_Framework_TestCase {
         $this->assertStringEqualsFile($this->expectedPath . 'supported-controls-form.phtml', $this->formHelper->__invoke($oForm, null));
     }
 
+    public function testRenderMultiCheckboxInlineWithLabel() {
+        $oForm = new \Zend\Form\Form();
+        $oForm->add(array(
+            'name' => 'optionsRadios',
+            'type' => 'MultiCheckbox',
+            'options' => array(
+                'label' => 'Test label',
+                'column-size' => 'sm-10',
+                'label_attributes' => array('class' => 'col-sm-2'),
+                'value_options' => array(
+                    array('label' => '1', 'value' => 'option1', 'attributes' => array('id' => 'inlineCheckbox1')),
+                    array('label' => '2', 'value' => 'option2', 'attributes' => array('id' => 'inlineCheckbox2')),
+                    array('label' => '3', 'value' => 'option3', 'attributes' => array('id' => 'inlineCheckbox3'))
+                )
+            )
+        ));
+        //Test content
+        $this->assertStringEqualsFile($this->expectedPath . 'multi-checkbox-inline.phtml', $this->formHelper->__invoke($oForm));
+    }
+
     /**
      * Test http://getbootstrap.com/css/#forms-controls-static
      */
@@ -446,6 +466,17 @@ class TwbBundleFormsTest extends \PHPUnit_Framework_TestCase {
                 ->setLabel('Input label')
                 ->setLabelAttributes(array('class' => 'col-lg-2'));
         $this->assertStringEqualsFile($this->expectedPath . 'forms-horizontal-errored-input-with-label.phtml', $this->formHelper->__invoke($oForm));
+    }
+
+    /**
+     * @param string $sExpectedFile
+     * @param string $sActualString
+     * @param string $sMessage
+     * @param boolean $bCanonicalize
+     * @param boolean $bIgnoreCase
+     */
+    public static function assertStringEqualsFile($sExpectedFile, $sActualString, $sMessage = '', $bCanonicalize = false, $bIgnoreCase = false) {
+        return parent::assertStringEqualsFile($sExpectedFile, $sActualString, $sMessage, $bCanonicalize, $bIgnoreCase);
     }
 
 }

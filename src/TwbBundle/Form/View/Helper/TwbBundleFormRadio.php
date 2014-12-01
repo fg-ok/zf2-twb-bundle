@@ -2,7 +2,12 @@
 
 namespace TwbBundle\Form\View\Helper;
 
-class TwbBundleFormRadio extends \Zend\Form\View\Helper\FormRadio {
+use Zend\Form\View\Helper\FormRadio;
+use Zend\Form\ElementInterface;
+use Zend\Form\Element\MultiCheckbox;
+
+class TwbBundleFormRadio extends FormRadio
+{
 
     /**
      * Separator for checkbox elements
@@ -20,7 +25,8 @@ class TwbBundleFormRadio extends \Zend\Form\View\Helper\FormRadio {
      * @param \Zend\Form\ElementInterface $oElement
      * @return string
      */
-    public function render(\Zend\Form\ElementInterface $oElement) {
+    public function render(ElementInterface $oElement)
+    {
         if ($oElement->getOption('disable-twb')) {
             $sSeparator = $this->separator;
             $this->separator = '';
@@ -39,7 +45,12 @@ class TwbBundleFormRadio extends \Zend\Form\View\Helper\FormRadio {
      * @param array $aAttributes
      * @return string
      */
-    protected function renderOptions(\Zend\Form\Element\MultiCheckbox $oElement, array $aOptions, array $aSelectedOptions, array $aAttributes) {
+    protected function renderOptions(
+        MultiCheckbox $oElement,
+        array $aOptions,
+        array $aSelectedOptions,
+        array $aAttributes
+    ) {
         $iIterator = 0;
         $aGlobalLabelAttributes = $oElement->getLabelAttributes()? : $this->labelAttributes;
         $sMarkup = '';
@@ -89,16 +100,22 @@ class TwbBundleFormRadio extends \Zend\Form\View\Helper\FormRadio {
                 if (isset($aOptionspec['label_attributes'])) {
                     $aLabelAttributes = isset($aLabelAttributes) ? array_merge($aLabelAttributes, $aOptionspec['label_attributes']) : $aOptionspec['label_attributes'];
                 }
+
                 if (null !== ($oTranslator = $this->getTranslator())) {
                     $sLabel = $oTranslator->translate($sLabel, $this->getTranslatorTextDomain());
                 }
+
+                if (!($oElement instanceof \Zend\Form\LabelAwareInterface) || !$oElement->getLabelOption('disable_html_escape')) {
+                    $sLabel = $this->getEscapeHtmlHelper()->__invoke($sLabel);
+                }
+
                 switch ($this->getLabelPosition()) {
                     case self::LABEL_PREPEND:
-                        $sOptionMarkup = sprintf($oLabelHelper->openTag($aLabelAttributes) . '%s%s' . $oLabelHelper->closeTag(), $this->getEscapeHtmlHelper()->__invoke($sLabel), $sOptionMarkup);
+                        $sOptionMarkup = sprintf($oLabelHelper->openTag($aLabelAttributes) . '%s%s' . $oLabelHelper->closeTag(), $sLabel, $sOptionMarkup);
                         break;
                     case self::LABEL_APPEND:
                     default:
-                        $sOptionMarkup = sprintf($oLabelHelper->openTag($aLabelAttributes) . '%s%s' . $oLabelHelper->closeTag(), $sOptionMarkup, $this->getEscapeHtmlHelper()->__invoke($sLabel));
+                        $sOptionMarkup = sprintf($oLabelHelper->openTag($aLabelAttributes) . '%s%s' . $oLabelHelper->closeTag(), $sOptionMarkup, $sLabel);
                         break;
                 }
             }
@@ -106,5 +123,4 @@ class TwbBundleFormRadio extends \Zend\Form\View\Helper\FormRadio {
         }
         return $sMarkup;
     }
-
 }
